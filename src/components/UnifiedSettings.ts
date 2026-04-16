@@ -416,10 +416,9 @@ export class UnifiedSettings {
     }
 
     if (this.activePanelCategory !== 'all') {
+      const wrdoCat = SITE_VARIANT === 'wrdo' ? WRDO_PANEL_CATEGORY_MAP[this.activePanelCategory] : undefined;
       const catDef = SITE_VARIANT === 'wrdo'
-        ? WRDO_PANEL_CATEGORY_MAP[this.activePanelCategory]
-          ? { panelKeys: WRDO_PANEL_CATEGORY_MAP[this.activePanelCategory].panelKeys }
-          : undefined
+        ? (wrdoCat ? { panelKeys: wrdoCat.panelKeys } : undefined)
         : PANEL_CATEGORY_MAP[this.activePanelCategory];
       if (catDef) {
         const allowed = new Set(catDef.panelKeys);
