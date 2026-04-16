@@ -527,6 +527,19 @@ export class PanelLayoutManager implements AppModule {
         <button class="search-mobile-fab" id="searchMobileFab" aria-label="Search">\u{1F50D}</button>
       </div>
       <footer class="site-footer">
+        ${SITE_VARIANT === 'wrdo' ? `
+        <div class="site-footer-brand">
+          <div class="site-footer-brand-text">
+            <span class="site-footer-name">WRDO CAVE</span>
+            <span class="site-footer-sub">v${__APP_VERSION__}</span>
+          </div>
+        </div>
+        <nav>
+          <a href="https://github.com/wrdo-development" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://status.wrdo.co.za" target="_blank" rel="noopener">Status</a>
+        </nav>
+        <span class="site-footer-copy">&copy; ${new Date().getFullYear()} WRDO</span>
+        ` : `
         <div class="site-footer-brand">
           <img src="/favico/favicon-32x32.png" alt="" width="28" height="28" class="site-footer-icon" />
           <div class="site-footer-brand-text">
@@ -545,6 +558,7 @@ export class PanelLayoutManager implements AppModule {
           ${this.ctx.isDesktopApp ? '' : `<span id="footerDownloadMount"></span>`}
         </nav>
         <span class="site-footer-copy">&copy; ${new Date().getFullYear()} World Monitor</span>
+        `}
       </footer>
     `;
 
