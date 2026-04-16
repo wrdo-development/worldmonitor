@@ -112,6 +112,10 @@ import { getAuthState, subscribeAuthState } from '@/services/auth-state';
 import type { AuthSession } from '@/services/auth-state';
 import { PanelGateReason, getPanelGateReason, hasPremiumAccess } from '@/services/panel-gating';
 import type { Panel } from '@/components/Panel';
+import { mountTopNav } from '@/components/wrdo/TopNav';
+import type { TopNav } from '@/components/wrdo/TopNav';
+import { mountChatSidebar } from '@/components/wrdo/ChatSidebar';
+import type { ChatSidebar } from '@/components/wrdo/ChatSidebar';
 
 /** Panels that require premium access on web. Auth-based gating applies to these. */
 const WEB_PREMIUM_PANELS = new Set([
@@ -146,6 +150,8 @@ export class PanelLayoutManager implements AppModule {
   private boundWidgetCreatorHandler: ((e: Event) => void) | null = null;
   private unsubscribeEntitlementChange: (() => void) | null = null;
   private unsubscribePaymentFailureBanner: (() => void) | null = null;
+  private wrdoTopNav: TopNav | null = null;
+  private wrdoChatSidebar: ChatSidebar | null = null;
 
   constructor(ctx: AppContext, callbacks: PanelLayoutManagerCallbacks) {
     this.ctx = ctx;
@@ -192,6 +198,9 @@ export class PanelLayoutManager implements AppModule {
 
     // Mount WRDO top navigation bar (wrdo variant only)
     this.wrdoTopNav = mountTopNav(this.ctx.container);
+
+    // Mount WRDO chat sidebar (wrdo variant only)
+    this.wrdoChatSidebar = mountChatSidebar(this.ctx.container);
 
     // Subscribe to auth state for reactive panel gating on web
     this.unsubscribeAuth = subscribeAuthState((state) => {
@@ -258,6 +267,12 @@ export class PanelLayoutManager implements AppModule {
 
     // Reset checkout overlay so next layout init can register its callback
     destroyCheckoutOverlay();
+
+    // Clean up WRDO wrdo-specific components
+    this.wrdoTopNav?.destroy();
+    this.wrdoTopNav = null;
+    this.wrdoChatSidebar?.destroy();
+    this.wrdoChatSidebar = null;
 
     window.removeEventListener('resize', this.ensureCorrectZones);
   }
