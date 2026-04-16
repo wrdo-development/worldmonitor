@@ -393,3 +393,22 @@
 [data-variant="wrdo"] .main-content {
   transition: margin-left 0.2s ease;
 }
+
+/* Chat resize handle */
+.wrdo-chat-resize-handle {
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 110;
+  transition: background 0.15s ease;
+}
+
+.wrdo-chat-resize-handle:hover,
+.wrdo-chat-resize-handle:active {
+  background: var(--accent, #CCFF00);
+  opacity: 0.4;
+}

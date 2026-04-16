@@ -14,7 +14,9 @@ export class ChatSidebar {
   private inputEl: HTMLTextAreaElement;
   private sendBtn: HTMLButtonElement;
   private toggleBtn: HTMLButtonElement;
+  private resizeHandle: HTMLElement;
   private collapsed = false;
+  private sidebarWidth = 360;
   private messages: ChatMessage[] = [];
   private abortController: AbortController | null = null;
   private mainContent: HTMLElement | null = null;
@@ -22,6 +24,7 @@ export class ChatSidebar {
   constructor() {
     this.sidebar = this.buildSidebar();
     this.toggleBtn = this.buildToggleButton();
+    this.resizeHandle = this.buildResizeHandle();
     this.messagesEl = this.sidebar.querySelector('.wrdo-chat-messages')!;
     this.inputEl = this.sidebar.querySelector('.wrdo-chat-input')!;
     this.sendBtn = this.sidebar.querySelector('.wrdo-chat-send')!;
@@ -40,6 +43,44 @@ export class ChatSidebar {
     this.toggleBtn.addEventListener('click', () => {
       this.toggleCollapse();
     });
+  }
+
+  private buildResizeHandle(): HTMLElement {
+    const handle = document.createElement('div');
+    handle.className = 'wrdo-chat-resize-handle';
+    handle.title = 'Drag to resize';
+
+    let startX = 0;
+    let startWidth = 0;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const delta = e.clientX - startX;
+      const newWidth = Math.min(Math.max(startWidth + delta, 280), 700);
+      this.sidebarWidth = newWidth;
+      this.sidebar.style.width = `${newWidth}px`;
+      if (this.mainContent) {
+        this.mainContent.style.marginLeft = `${newWidth}px`;
+      }
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      startX = e.clientX;
+      startWidth = this.sidebarWidth;
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    return handle;
   }
 
   private buildSidebar(): HTMLElement {
@@ -282,12 +323,21 @@ export class ChatSidebar {
   mount(container: HTMLElement): void {
     this.mainContent = container.querySelector<HTMLElement>('.main-content');
 
+    // Append resize handle to sidebar
+    this.sidebar.appendChild(this.resizeHandle);
+
     // Insert the sidebar and toggle button at the top level of the page
     document.body.appendChild(this.sidebar);
     document.body.appendChild(this.toggleBtn);
 
+    // Set initial width
+    this.sidebar.style.width = `${this.sidebarWidth}px`;
+
     // Mark main content as chat-open by default (sidebar starts expanded)
-    this.mainContent?.classList.add('wrdo-chat-open');
+    if (this.mainContent) {
+      this.mainContent.classList.add('wrdo-chat-open');
+      this.mainContent.style.marginLeft = `${this.sidebarWidth}px`;
+    }
   }
 
   destroy(): void {
