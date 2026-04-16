@@ -331,7 +331,7 @@ export class PanelLayoutManager implements AppModule {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           ${SITE_VARIANT === 'wrdo' ? `
-          <img src="/wrdo/wrdo-logo.svg" alt="WRDO" height="20" class="wrdo-header-logo" /><span class="logo-mobile">WRDO Cave</span><span class="version">v${__APP_VERSION__}</span>
+          <img src="/wrdo/wrdo-logo.svg" alt="WRDO" height="30" class="wrdo-header-logo" />
           ` : `<div class="variant-switcher">${(() => {
         const local = this.ctx.isDesktopApp || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
         const inIframe = window.self !== window.top;
