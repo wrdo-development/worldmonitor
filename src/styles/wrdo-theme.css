@@ -525,3 +525,59 @@
   background: var(--accent, #CCFF00);
   opacity: 0.4;
 }
+
+/* ─── Fix 1: WRDO header logo ──────────────────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-header-logo {
+  height: 20px;
+  width: auto;
+  margin-right: 12px;
+}
+
+/* ─── Fix 2 & 6: Hide World Monitor default header and header-right strip ─── */
+
+[data-variant="wrdo"] .header {
+  display: none !important;
+}
+
+[data-variant="wrdo"] .header-right {
+  display: none !important;
+}
+
+/* ─── Fix 3: Hide World Monitor footer strip ───────────────────────────────── */
+
+[data-variant="wrdo"] .site-footer {
+  display: none !important;
+}
+
+/* ─── Fix 4: TopNav actions (right side) ───────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-topnav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+[data-variant="wrdo"] .wrdo-topnav-action {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--text-muted, #8A8580);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+[data-variant="wrdo"] .wrdo-topnav-action:hover {
+  color: var(--text, #E8E2DB);
+  background: var(--surface-hover, #2D2A27);
+}
+
+[data-variant="wrdo"] .wrdo-logout-action:hover {
+  color: var(--alert, #FF4400);
+}
