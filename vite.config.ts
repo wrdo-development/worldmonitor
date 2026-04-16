@@ -3,6 +3,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { resolve, dirname, extname } from 'path';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import { brotliCompress } from 'zlib';
+import { wrdoApiPlugin } from './server/worldmonitor/wrdo/v1/plugin';
 import { promisify } from 'util';
 import pkg from './package.json';
 import { VARIANT_META, type VariantMeta } from './src/config/variant-meta';
@@ -623,6 +624,7 @@ export default defineConfig(({ mode }) => {
       rssProxyPlugin(),
       youtubeLivePlugin(),
       gpsjamDevPlugin(),
+      wrdoApiPlugin(),
       sebufApiPlugin(),
       brotliPrecompressPlugin(),
       VitePWA({
