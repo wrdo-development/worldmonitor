@@ -347,6 +347,14 @@ export class EventHandlerManager implements AppModule {
       }
     });
 
+    document.getElementById('wrdoLogoutBtn')?.addEventListener('click', () => {
+      // Clear auth cookies and redirect to login
+      document.cookie.split(';').forEach(c => {
+        document.cookie = c.trim().split('=')[0] + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+      });
+      window.location.href = '/login';
+    });
+
     this.initDownloadDropdown();
     this.initFooterDownload();
 

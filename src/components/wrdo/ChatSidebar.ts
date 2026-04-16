@@ -13,6 +13,7 @@ export class ChatSidebar {
   private messagesEl: HTMLElement;
   private inputEl: HTMLTextAreaElement;
   private sendBtn: HTMLButtonElement;
+  private readonly uploadBtn: HTMLButtonElement;
   private toggleBtn: HTMLButtonElement;
   private resizeHandle: HTMLElement;
   private collapsed = false;
@@ -28,6 +29,7 @@ export class ChatSidebar {
     this.messagesEl = this.sidebar.querySelector('.wrdo-chat-messages')!;
     this.inputEl = this.sidebar.querySelector('.wrdo-chat-input')!;
     this.sendBtn = this.sidebar.querySelector('.wrdo-chat-send')!;
+    this.uploadBtn = this.sidebar.querySelector('.wrdo-chat-upload')!;
 
     this.inputEl.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
@@ -38,6 +40,10 @@ export class ChatSidebar {
 
     this.sendBtn.addEventListener('click', () => {
       void this.sendMessage();
+    });
+
+    this.uploadBtn.addEventListener('click', () => {
+      alert('File upload coming soon');
     });
 
     this.toggleBtn.addEventListener('click', () => {
@@ -91,10 +97,16 @@ export class ChatSidebar {
 
     sidebar.innerHTML = `
       <div class="wrdo-chat-header">
+        <img class="wrdo-chat-avatar" src="/wrdo/wrdo-avatar.png" alt="WRDO" width="28" height="28" />
         <span class="wrdo-chat-title">WRDO</span>
-        <span class="wrdo-chat-subtitle">AI Assistant</span>
       </div>
       <div class="wrdo-chat-messages" role="log" aria-live="polite" aria-label="Chat messages"></div>
+      <div class="wrdo-chat-controls">
+        <select class="wrdo-chat-model-select" aria-label="Select model">
+          <option value="free-tool-calling">Free (Gemini Flash)</option>
+          <option value="standard-chat">Standard (Claude Sonnet)</option>
+        </select>
+      </div>
       <div class="wrdo-chat-input-area">
         <textarea
           class="wrdo-chat-input"
@@ -103,6 +115,9 @@ export class ChatSidebar {
           aria-label="Chat message input"
           maxlength="2000"
         ></textarea>
+        <button class="wrdo-chat-upload" type="button" aria-label="Upload file">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </button>
         <button class="wrdo-chat-send" type="button" aria-label="Send message">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -146,7 +161,10 @@ export class ChatSidebar {
     const el = document.createElement('div');
     el.className = `wrdo-chat-message wrdo-chat-message--${msg.role}`;
     el.setAttribute('data-msg-id', msg.id);
-    el.innerHTML = `<div class="wrdo-chat-message-content">${this.escapeHtml(msg.content)}</div>`;
+    const avatarHtml = msg.role === 'assistant'
+      ? `<img class="wrdo-chat-avatar" src="/wrdo/wrdo-avatar.png" alt="WRDO" width="28" height="28" />`
+      : '';
+    el.innerHTML = `${avatarHtml}<div class="wrdo-chat-message-content">${this.escapeHtml(msg.content)}</div>`;
     this.messagesEl.appendChild(el);
     this.scrollToBottom();
     return el;

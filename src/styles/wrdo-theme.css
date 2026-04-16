@@ -255,6 +255,9 @@
   border: 1px solid var(--border, #2D2A27);
   align-self: flex-start;
   color: var(--text, #E8E2DB);
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
 }
 
 [data-variant="wrdo"] .wrdo-chat-message--streaming .wrdo-chat-message-content::after {
@@ -392,6 +395,116 @@
 
 [data-variant="wrdo"] .main-content {
   transition: margin-left 0.2s ease;
+}
+
+/* ─── WRDO Chat Avatar ─────────────────────────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-chat-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--accent, #CCFF00);
+  color: #121212;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 8px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* In the header, no right margin needed — gap handles spacing */
+[data-variant="wrdo"] .wrdo-chat-header .wrdo-chat-avatar {
+  margin-right: 0;
+}
+
+/* Avatar inside assistant message rows */
+[data-variant="wrdo"] .wrdo-chat-message--assistant .wrdo-chat-avatar {
+  margin-right: 8px;
+  margin-top: 2px;
+}
+
+/* ─── WRDO Chat Model Selector ─────────────────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-chat-controls {
+  padding: 4px 12px 0;
+  flex-shrink: 0;
+}
+
+[data-variant="wrdo"] .wrdo-chat-model-select {
+  font-size: 11px;
+  font-family: var(--font-sans);
+  color: var(--text-muted, #8A8580);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border, #2D2A27);
+  padding: 2px 4px 2px 0;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+[data-variant="wrdo"] .wrdo-chat-model-select:hover,
+[data-variant="wrdo"] .wrdo-chat-model-select:focus {
+  color: var(--text, #E8E2DB);
+  border-bottom-color: var(--accent, #CCFF00);
+}
+
+[data-variant="wrdo"] .wrdo-chat-model-select option {
+  background: var(--surface, #1E1E1E);
+  color: var(--text, #E8E2DB);
+}
+
+/* ─── WRDO Chat Upload Button ──────────────────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-chat-upload {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: var(--panel-bg, #2D2A27);
+  border: 1px solid var(--border, #2D2A27);
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted, #8A8580);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+[data-variant="wrdo"] .wrdo-chat-upload:hover {
+  color: var(--accent, #CCFF00);
+  border-color: var(--accent, #CCFF00);
+  background: rgba(204, 255, 0, 0.06);
+}
+
+/* ─── WRDO Header Logout Button ────────────────────────────────────────────── */
+
+[data-variant="wrdo"] .wrdo-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid var(--border, #2D2A27);
+  border-radius: 4px;
+  color: var(--text-muted, #8A8580);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+[data-variant="wrdo"] .wrdo-logout-btn:hover {
+  color: var(--alert, #FF4400);
+  border-color: var(--alert, #FF4400);
+  background: rgba(255, 68, 0, 0.06);
 }
 
 /* Chat resize handle */
