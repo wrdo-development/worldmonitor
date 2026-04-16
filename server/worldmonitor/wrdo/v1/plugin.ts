@@ -21,6 +21,9 @@ import { createSentryRoute } from './sentry';
 import { createQueuesRoute } from './queues';
 import { createHealthRoute } from './health';
 import { createCostsRoute } from './costs';
+import { createCalendarRoute } from './calendar';
+import { createEmailRoute } from './email';
+import { createChatRoute } from './chat';
 
 const WRDO_PATH_RE = /^\/api\/wrdo\/v1\//;
 
@@ -31,6 +34,9 @@ export function wrdoApiPlugin(): Plugin {
     createQueuesRoute(),
     createHealthRoute(),
     createCostsRoute(),
+    createCalendarRoute(),
+    createEmailRoute(),
+    createChatRoute(),
   ];
 
   const router = createRouter(routes);
@@ -77,7 +83,7 @@ export function wrdoApiPlugin(): Plugin {
           if (req.method === 'OPTIONS') {
             res.statusCode = 204;
             res.setHeader('Access-Control-Allow-Origin', '*');
-            res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
             res.end();
             return;
@@ -106,7 +112,21 @@ export function wrdoApiPlugin(): Plugin {
             res.setHeader(key, value);
           });
           res.setHeader('Access-Control-Allow-Origin', '*');
-          res.end(await response.text());
+          // For SSE streams, pipe the body directly instead of buffering
+          const contentType = response.headers.get('content-type') ?? '';
+          if (contentType.includes('text/event-stream') && response.body) {
+            const reader = response.body.getReader();
+            const pump = () => {
+              reader.read().then(({ done, value }) => {
+                if (done) { res.end(); return; }
+                res.write(value);
+                pump();
+              }).catch(() => { res.end(); });
+            };
+            pump();
+          } else {
+            res.end(await response.text());
+          }
         } catch (err) {
           console.error('[wrdo-api] Error:', err);
           res.statusCode = 500;
