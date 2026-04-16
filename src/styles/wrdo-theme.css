@@ -1,0 +1,33 @@
+/* WRDO Cave — Brand Tokens */
+
+/* Google Fonts: Inter, JetBrains Mono */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root[data-variant="wrdo"] {
+  --bg: #121212;           /* Void */
+  --surface: #1E1E1E;      /* Carbon Black */
+  --panel-bg: #2D2A27;     /* Graphite */
+  --accent: #CCFF00;       /* Tribe Lime */
+  --alert: #FF4400;        /* Cavefire Orange */
+  --text: #E8E2DB;         /* Dust Grey */
+  --text-muted: #8A8580;
+  --green: #CCFF00;
+  --red: #FF4400;
+  --yellow: #FFB800;
+  --blue: #3B82F6;
+
+  /* Override base theme vars to match WRDO brand */
+  --bg-secondary: #181818;
+  --surface-hover: #2D2A27;
+  --surface-active: #3A3630;
+  --border: #2D2A27;
+  --border-strong: #4A4540;
+  --border-subtle: #1E1E1E;
+  --text-secondary: #C8C2BB;
+  --text-dim: #8A8580;
+  --text-faint: #6A6560;
+  --text-ghost: #4A4540;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}

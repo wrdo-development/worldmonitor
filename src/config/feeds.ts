@@ -882,6 +882,23 @@ const COMMODITY_FEEDS: Record<string, Feed[]> = {
   ],
 };
 
+const WRDO_FEEDS: Record<string, Feed[]> = {
+  tech: TECH_FEEDS.tech,
+  ai: TECH_FEEDS.ai,
+  security: TECH_FEEDS.security,
+  dev: TECH_FEEDS.dev,
+  github: TECH_FEEDS.github,
+  'live-news': [
+    { name: 'News24 SA', url: rss('https://feeds.24.com/articles/News24/TopStories/rss') },
+    { name: 'Daily Maverick', url: rss('https://www.dailymaverick.co.za/feed/') },
+    { name: 'MyBroadband', url: rss('https://mybroadband.co.za/news/feed') },
+    { name: 'ITWeb', url: rss('https://www.itweb.co.za/rss') },
+    { name: 'TechCrunch', url: rss('https://techcrunch.com/feed/') },
+    { name: 'The Verge', url: rss('https://www.theverge.com/rss/index.xml') },
+    { name: 'Hacker News', url: rss('https://hnrss.org/frontpage') },
+  ],
+};
+
 // Variant-aware exports
 export const FEEDS = SITE_VARIANT === 'tech'
   ? TECH_FEEDS
@@ -891,7 +908,9 @@ export const FEEDS = SITE_VARIANT === 'tech'
       ? HAPPY_FEEDS
       : SITE_VARIANT === 'commodity'
         ? COMMODITY_FEEDS
-        : FULL_FEEDS;
+        : SITE_VARIANT === 'wrdo'
+          ? WRDO_FEEDS
+          : FULL_FEEDS;
 
 export const SOURCE_REGION_MAP: Record<string, { labelKey: string; feedKeys: string[] }> = {
   // Full (geopolitical) variant regions
