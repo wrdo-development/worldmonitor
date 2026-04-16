@@ -1,6 +1,6 @@
 import '@/styles/settings-window.css';
 import { FEEDS, INTEL_SOURCES, SOURCE_REGION_MAP } from '@/config/feeds';
-import { PANEL_CATEGORY_MAP, ALL_PANELS, VARIANT_DEFAULTS, getEffectivePanelConfig, isPanelEntitled, FREE_MAX_PANELS } from '@/config/panels';
+import { PANEL_CATEGORY_MAP, WRDO_PANEL_CATEGORY_MAP, ALL_PANELS, VARIANT_DEFAULTS, getEffectivePanelConfig, isPanelEntitled, FREE_MAX_PANELS } from '@/config/panels';
 import { isProUser } from '@/services/widget-store';
 import { SITE_VARIANT } from '@/config/variant';
 import { t } from '@/services/i18n';
@@ -317,6 +317,8 @@ export class UnifiedSettings {
   }
 
   private renderUpgradeSection(): string {
+    if (SITE_VARIANT === 'wrdo') return '';
+
     if (isEntitled()) {
       const sub = getSubscription();
       const planName = sub?.displayName ?? 'Pro';
@@ -371,11 +373,18 @@ export class UnifiedSettings {
   }
 
   private getAvailablePanelCategories(): Array<{ key: string; label: string }> {
-    const settings = this.config.getPanelSettings();
     const categories: Array<{ key: string; label: string }> = [
       { key: 'all', label: t('header.sourceRegionAll') }
     ];
 
+    if (SITE_VARIANT === 'wrdo') {
+      for (const [catKey, catDef] of Object.entries(WRDO_PANEL_CATEGORY_MAP)) {
+        categories.push({ key: catKey, label: catDef.label });
+      }
+      return categories;
+    }
+
+    const settings = this.config.getPanelSettings();
     for (const [catKey, catDef] of Object.entries(PANEL_CATEGORY_MAP)) {
       const hasEnabledPanel = catDef.panelKeys.some(pk => settings[pk]?.enabled);
       if (hasEnabledPanel) {
@@ -386,14 +395,32 @@ export class UnifiedSettings {
     return categories;
   }
 
+  private getWrdoPanelKeys(): Set<string> {
+    const keys = new Set<string>();
+    for (const catDef of Object.values(WRDO_PANEL_CATEGORY_MAP)) {
+      for (const k of catDef.panelKeys) keys.add(k);
+    }
+    return keys;
+  }
+
   private getVisiblePanelEntries(): Array<[string, PanelConfig]> {
     const panelSettings = this.draftPanelSettings;
     let entries = Object.entries(panelSettings)
       .filter(([key]) => key !== 'runtime-config' || this.config.isDesktopApp)
       .filter(([key]) => !key.startsWith('cw-'));
 
+    // For WRDO variant: only show panels in the WRDO category map
+    if (SITE_VARIANT === 'wrdo') {
+      const wrdoKeys = this.getWrdoPanelKeys();
+      entries = entries.filter(([key]) => wrdoKeys.has(key));
+    }
+
     if (this.activePanelCategory !== 'all') {
-      const catDef = PANEL_CATEGORY_MAP[this.activePanelCategory];
+      const catDef = SITE_VARIANT === 'wrdo'
+        ? WRDO_PANEL_CATEGORY_MAP[this.activePanelCategory]
+          ? { panelKeys: WRDO_PANEL_CATEGORY_MAP[this.activePanelCategory].panelKeys }
+          : undefined
+        : PANEL_CATEGORY_MAP[this.activePanelCategory];
       if (catDef) {
         const allowed = new Set(catDef.panelKeys);
         entries = entries.filter(([key]) => allowed.has(key));

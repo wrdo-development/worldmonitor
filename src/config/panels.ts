@@ -1265,6 +1265,25 @@ export const PANEL_CATEGORY_MAP: Record<string, { labelKey: string; panelKeys: s
   },
 };
 
+/**
+ * WRDO-specific panel category map.
+ * Used in place of PANEL_CATEGORY_MAP when SITE_VARIANT === 'wrdo'.
+ */
+export const WRDO_PANEL_CATEGORY_MAP: Record<string, { label: string; panelKeys: string[] }> = {
+  platform: {
+    label: 'Platform',
+    panelKeys: ['service-status', 'github', 'internet-disruptions', 'monitors'],
+  },
+  news: {
+    label: 'News',
+    panelKeys: ['live-news', 'ai', 'tech', 'security', 'dev'],
+  },
+  monitoring: {
+    label: 'Monitoring',
+    panelKeys: ['insights', 'world-clock'],
+  },
+};
+
 // Monitor palette — fixed category colors persisted to localStorage (not theme-dependent)
 export const MONITOR_COLORS = [
   '#44ff88',

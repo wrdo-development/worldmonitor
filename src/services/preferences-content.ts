@@ -236,6 +236,7 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
 
   html += `</div></details>`;
 
+  if (SITE_VARIANT !== 'wrdo') {
   // ── Intelligence group ──
   html += `<details class="wm-pref-group">`;
   html += `<summary>${t('preferences.intelligence')}</summary>`;
@@ -328,7 +329,9 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
   </div>`;
 
   html += `</div></details>`;
+  } // end if (SITE_VARIANT !== 'wrdo') — Intelligence + Analysis Frameworks + Media
 
+  if (SITE_VARIANT !== 'wrdo') {
   // ── Media group ──
   html += `<details class="wm-pref-group">`;
   html += `<summary>${t('preferences.media')}</summary>`;
@@ -356,6 +359,7 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
   );
 
   html += `</div></details>`;
+  } // end if (SITE_VARIANT !== 'wrdo') — Media
 
   // ── Panels group ──
   html += `<details class="wm-pref-group">`;
@@ -386,6 +390,7 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
     html += `</div></details>`;
   }
 
+  if (SITE_VARIANT !== 'wrdo') {
   // ── Data & Community group ──
   html += `<details class="wm-pref-group">`;
   html += `<summary>${t('preferences.dataAndCommunity')}</summary>`;
@@ -403,6 +408,7 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
     <span>${t('components.community.joinDiscussion')}</span>
   </a>`;
   html += `</div></details>`;
+  } // end if (SITE_VARIANT !== 'wrdo') — Data & Community
 
   // ── Notifications group (web-only) ──
   // Three states: (a) confirmed PRO → full UI, (b) everything else → locked [PRO] section.
@@ -425,8 +431,8 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
     }
   }
 
-  // AI status footer (web-only)
-  if (!host.isDesktopApp) {
+  // AI status footer (web-only, not shown on WRDO)
+  if (!host.isDesktopApp && SITE_VARIANT !== 'wrdo') {
     html += `<div class="ai-flow-popup-footer"><span class="ai-flow-status-dot" id="usStatusDot"></span><span class="ai-flow-status-text" id="usStatusText"></span></div>`;
   }
 
@@ -1414,7 +1420,10 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
             const rowEl = container.querySelector<HTMLElement>('[data-channel-type="slack"]');
             if (rowEl) {
               rowEl.querySelector('.us-notif-error')?.remove();
-              rowEl.insertAdjacentHTML('beforeend', `<span class="us-notif-error">Slack connection failed: ${escapeHtml(String(e.data.error ?? 'unknown'))}</span>`);
+              const errSpan = document.createElement('span');
+              errSpan.className = 'us-notif-error';
+              errSpan.textContent = `Slack connection failed: ${String(e.data.error ?? 'unknown')}`;
+              rowEl.appendChild(errSpan);
               const btn = rowEl.querySelector<HTMLButtonElement>('#usConnectSlack');
               if (btn) btn.textContent = 'Add to Slack';
             }
@@ -1424,7 +1433,10 @@ export function renderPreferences(host: PreferencesHost): PreferencesResult {
             const rowEl = container.querySelector<HTMLElement>('[data-channel-type="discord"]');
             if (rowEl) {
               rowEl.querySelector('.us-notif-error')?.remove();
-              rowEl.insertAdjacentHTML('beforeend', `<span class="us-notif-error">Discord connection failed: ${escapeHtml(String(e.data.error ?? 'unknown'))}</span>`);
+              const errSpan = document.createElement('span');
+              errSpan.className = 'us-notif-error';
+              errSpan.textContent = `Discord connection failed: ${String(e.data.error ?? 'unknown')}`;
+              rowEl.appendChild(errSpan);
               const btn = rowEl.querySelector<HTMLButtonElement>('#usConnectDiscord');
               if (btn) btn.textContent = 'Connect Discord';
             }
