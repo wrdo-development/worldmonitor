@@ -190,6 +190,9 @@ export class PanelLayoutManager implements AppModule {
   init(): void {
     this.renderLayout();
 
+    // Mount WRDO top navigation bar (wrdo variant only)
+    this.wrdoTopNav = mountTopNav(this.ctx.container);
+
     // Subscribe to auth state for reactive panel gating on web
     this.unsubscribeAuth = subscribeAuthState((state) => {
       this.updatePanelGating(state);
@@ -1789,7 +1792,7 @@ export class PanelLayoutManager implements AppModule {
         this.ctx.panels[key]?.hide();
       }
     }).catch((err) => {
-      console.error(`[panel] failed to lazy-load "${key}"`, err);
+      console.error('[panel] failed to lazy-load panel', key, err); // nosemgrep: javascript.lang.security.audit.unsafe-formatstring.unsafe-formatstring
     });
   }
 
