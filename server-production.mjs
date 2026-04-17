@@ -167,30 +167,68 @@ const server = createServer(async (req, res) => {
 
   // WRDO API routes
   if (pathname === '/api/wrdo/v1/chat') {
-    const headers = {
-      'x-node-secret': CAVE_NODE_SECRET,
-      'x-wrdo-product': 'cave',
-      'x-wrdo-channel': 'cave-app',
-      'x-wrdo-user-id': WRDO_OWNER_USER_ID,
-      'Content-Type': 'application/json',
-    };
-    const body = await readBody(req);
-    const parsed = JSON.parse(body);
-    const upstream = await fetch(`${HEART_API_URL}/api/v1/brain/me/stream`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ message: parsed.message, platform: 'cave' }),
-    });
-    res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' });
-    const reader = upstream.body.getReader();
-    const pump = async () => {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) { res.end(); return; }
-        res.write(value);
+    if (req.method !== 'POST') {
+      res.writeHead(405, { 'Content-Type': 'application/json', 'Allow': 'POST, OPTIONS' });
+      res.end(JSON.stringify({ error: 'Method not allowed' }));
+      return;
+    }
+    try {
+      const headers = {
+        'x-node-secret': CAVE_NODE_SECRET,
+        'x-wrdo-product': 'cave',
+        'x-wrdo-channel': 'cave-app',
+        'x-wrdo-user-id': WRDO_OWNER_USER_ID,
+        'Content-Type': 'application/json',
+      };
+      const rawBody = await readBody(req);
+      let parsed;
+      try {
+        parsed = JSON.parse(rawBody);
+      } catch {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+        return;
       }
-    };
-    pump().catch(() => res.end());
+      if (!parsed.message || typeof parsed.message !== 'string') {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Missing or invalid "message" field' }));
+        return;
+      }
+      const upstream = await fetch(`${HEART_API_URL}/api/v1/brain/me/stream`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ message: parsed.message, platform: parsed.platform || 'cave' }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (!upstream.ok || !upstream.body) {
+        const errText = await upstream.text().catch(() => '');
+        res.writeHead(upstream.status || 502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: `Heart API error: ${upstream.status}`, detail: errText }));
+        return;
+      }
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'X-Accel-Buffering': 'no',
+      });
+      const reader = upstream.body.getReader();
+      const pump = async () => {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) { res.end(); return; }
+          res.write(value);
+        }
+      };
+      pump().catch(() => res.end());
+    } catch (err) {
+      if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: 'Failed to reach Heart API', message: err.message }));
+      } else {
+        res.end();
+      }
+    }
     return;
   }
 
