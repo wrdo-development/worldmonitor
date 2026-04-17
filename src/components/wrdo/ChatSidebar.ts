@@ -153,6 +153,7 @@ export class ChatSidebar {
 
     if (this.mainContent) {
       this.mainContent.classList.toggle('wrdo-chat-open', !this.collapsed);
+      this.mainContent.style.marginLeft = this.collapsed ? '0px' : `${this.sidebarWidth}px`;
     }
   }
 

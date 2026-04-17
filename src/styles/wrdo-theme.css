@@ -1,5 +1,7 @@
 /* WRDO Cave — Brand Tokens */
 
+/* Fontshare: Satoshi */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap');
 /* Google Fonts: Inter, JetBrains Mono */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -30,6 +32,16 @@
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: 'Satoshi', 'Inter', system-ui, sans-serif;
+}
+
+/* Satoshi for headings and display elements */
+[data-variant="wrdo"] h1,
+[data-variant="wrdo"] h2,
+[data-variant="wrdo"] h3,
+[data-variant="wrdo"] .panel-title,
+[data-variant="wrdo"] .logo {
+  font-family: var(--font-display);
 }
 
 /* ─── WRDO TopNav ──────────────────────────────────────────────────────────── */
@@ -51,12 +63,18 @@
 }
 
 [data-variant="wrdo"] .wrdo-topnav-logo {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--accent, #CCFF00);
-  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
   margin-right: 16px;
   flex-shrink: 0;
+  text-decoration: none;
+}
+
+[data-variant="wrdo"] .wrdo-topnav-logo-img {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 [data-variant="wrdo"] .wrdo-topnav-tabs {
@@ -387,14 +405,21 @@
   left: 40px; /* 360 - 320 collapsed offset */
 }
 
-/* Shift main content when sidebar is open */
-[data-variant="wrdo"] .wrdo-chat-open .main-content {
+/* Shift main content when sidebar is open.
+   The wrdo-chat-open class is toggled on .main-content itself (not a parent),
+   so this rule targets the element directly. Inline style marginLeft drives
+   the actual offset during drag-resize; this CSS is the initial-state fallback. */
+[data-variant="wrdo"] .main-content.wrdo-chat-open {
   margin-left: 360px;
-  transition: margin-left 0.2s ease;
 }
 
 [data-variant="wrdo"] .main-content {
   transition: margin-left 0.2s ease;
+}
+
+/* Hide UNAVAILABLE data badges on WRDO — all panels are free, no Pro upsell needed. */
+[data-variant="wrdo"] .panel-data-badge.unavailable {
+  display: none !important;
 }
 
 /* ─── WRDO Chat Avatar ─────────────────────────────────────────────────────── */
@@ -529,8 +554,10 @@
 /* ─── Fix 1: WRDO header logo ──────────────────────────────────────────────── */
 
 [data-variant="wrdo"] .wrdo-header-logo {
-  height: 20px;
+  height: 30px;
   width: auto;
+  object-fit: contain;
+  display: block;
   margin-right: 12px;
 }
 

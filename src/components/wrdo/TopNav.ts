@@ -61,9 +61,16 @@ export class TopNav {
     nav.setAttribute('aria-label', 'WRDO navigation');
 
     // Logo
-    const logo = document.createElement('span');
+    const logo = document.createElement('a');
     logo.className = 'wrdo-topnav-logo';
-    logo.textContent = 'WRDO';
+    logo.href = '#';
+    logo.setAttribute('aria-label', 'WRDO');
+    logo.addEventListener('click', (e) => { e.preventDefault(); this.activateTab('dashboard'); });
+    const logoImg = document.createElement('img');
+    logoImg.src = '/wrdo/wrdo-logo.svg';
+    logoImg.alt = 'WRDO';
+    logoImg.className = 'wrdo-topnav-logo-img';
+    logo.appendChild(logoImg);
     nav.appendChild(logo);
 
     // Tab list
